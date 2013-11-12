@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<title>David Agawin</title>
+</head>
+<script>
+$(document).ready(function(){
+	$("#main_body").hover(function(e){
+		$(this).css({
+			"left":0	
+		});
+	}, function(e){
+		$(this).css({
+			"left":-280
+		});
+	});
+	
+	
+	$.get("get_post.php", {pokemon:true}, function(resp){
+		//console.log(resp);
+		var arr = $.parseJSON(resp);
+		//console.log(arr);
+		//console.log(arr[0].desc);
+		
+		$.each(arr, function(index){
+			var img_title = arr[index].title +"<br/>";
+			$("#show_box").append(img_title);	
+			var img = "<img src='"+arr[index].image+"'/> <br>";
+			$("#show_box").append(img);
+			
+		});
+	});
+	
+	$("#post_button").click(function(e){
+		var post_obj = {
+			insert:true,
+			image: $("#image_url").val(),
+			title: $("#title").val(),
+			desc: $("#desc").val() 
+		};
+		
+		$.post("get_post.php", post_obj, function(resp){
+			//LOAD THE GALLERY (NO NEED TO REFRESH)
+			$("#show_box").load("gallery.html");
+		});
+	});
+	
+	//UNDER THE CLICK LISTENER
+	$.get("get_post.php", {pokemon:true, num:0}, function(resp){
+		console.log(resp);
+		var arr = $.parseJSON(resp);s
+	});
+	
+	$("#remove_button").click(function(){
+		$.post("get_post.php", {remove:true, num:2}, function(resp){
+			console.log(resp);
+		});
+	});
+	
+	$("#edit_button").click(function(){
+		var post_obj = {
+			edit:true,
+			num:$("#num").val(),
+			image: $("#image_url").val(),
+			title: $("#title").val(),
+			desc: $("#desc").val() 
+		
+		
+		};
+		$.post("get_post.php", post_obj, function(resp){
+			$("#show_box").load("gallery.html");
+		});
+	});
+	
+});
+</script>
+<style>
+body {
+	background-image:url('http://www.disneypictures.net/data/media/35/Disney_Princess_hearts.jpg');
+	background-repeat:no-repeat;
+	background-attachment:fixed;
+	background-position:center; 	
+}
+img {
+	height:120px;
+	width:120px;
+	border: 5px solid #FCF;
+	opacity:1.0;
+}
+img:hover {
+	opacity:0.8;	
+}
+#main_body {
+	position:absolute;
+	background-color:#FCF;
+	float:left;
+	left:-280px;
+	width:300px;
+	opacity:0.9;
+}
+#show_box {
+	width: 290px ;
+	float:left;  
+	background-color:#FFF;
+}
+#control_panel {
+	float:right;
+	background-color:#FCF;	
+	border-radius: 15px;
+}
+.title_color{
+	color:#F3F;
+	
+}
+</style>
+<body>
+<div id="main_body" class="title_color">
+	<div id="show_box">
+
+	</div>
+</div>
+<div id="item_info">
+
+</div>
+<div id="control_panel">
+<p>
+Add more Disney Princess Films!
+</p>
+<p>
+Open "my_xml.xml" to view movie information. 
+</p>
+<input type='button' id='post_button' value='Insert Data' />
+<input type='button' id='edit_button' value='Edit Data' />
+<p>
+Image URL:
+<input type='text' id='image_url'/>
+</p>
+<p> 
+Movie Title:
+<input type='text' id='title'/>
+</p>
+<p>
+Movie Description:
+<input type='text' id='desc'/>
+</p>
+<p>
+Item Number to Edit:
+<input type='text' id='num'/>
+</p>
+</div>
+</body>
+</html>
